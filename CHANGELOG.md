@@ -6,3 +6,5 @@ All notable changes to this project are documented here.
 
 - **2026-05-25**: perf: cache intermediate computations to eliminate redundant overhead
 
+- **2026-05-26**: chore: update dependencies and ignore unnecessary cache artifacts
+
