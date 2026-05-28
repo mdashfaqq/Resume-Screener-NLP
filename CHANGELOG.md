@@ -8,3 +8,5 @@ All notable changes to this project are documented here.
 
 - **2026-05-26**: chore: update dependencies and ignore unnecessary cache artifacts
 
+- **2026-05-28**: fix: resolve resource cleanup and graceful connection teardown
+
