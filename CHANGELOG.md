@@ -10,3 +10,5 @@ All notable changes to this project are documented here.
 
 - **2026-05-28**: fix: resolve resource cleanup and graceful connection teardown
 
+- **2026-06-05**: fix: handle null values and prevent potential boundary errors
+
