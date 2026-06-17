@@ -14,3 +14,5 @@ All notable changes to this project are documented here.
 
 - **2026-06-09**: docs: add architectural overview notes and component flow details
 
+- **2026-06-17**: test: add unit test assertions for edge cases and input validation
+
