@@ -18,3 +18,5 @@ All notable changes to this project are documented here.
 
 - **2026-06-18**: test: expand test coverage for error responses and status codes
 
+- **2026-06-18**: feat: initial project setup and core architecture scaffolding
+
