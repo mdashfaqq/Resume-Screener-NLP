@@ -20,3 +20,5 @@ All notable changes to this project are documented here.
 
 - **2026-06-18**: feat: initial project setup and core architecture scaffolding
 
+- **2026-06-25**: perf: improve response latency and optimize inner execution loops
+
