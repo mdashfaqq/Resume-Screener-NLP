@@ -28,9 +28,30 @@ If the embedding model can't be loaded, the ranker falls back to TF-IDF plus ski
 ```bash
 python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-streamlit run app.py
+pip install -r requirements-local.txt
+uvicorn api.index:app --reload   # modern web UI at http://localhost:8000
+streamlit run app.py             # or the original Streamlit UI
 ```
+
+## Deploy
+
+### Railway (Recommended for Full NLP Embeddings)
+
+1. Connect your GitHub repository (`Resume-Screener-NLP`) to [Railway](https://railway.app).
+2. Railway will automatically detect Python, install dependencies from `requirements.txt`, and use the `Procfile` / `railway.json` start command:
+   ```bash
+   uvicorn api.index:app --host 0.0.0.0 --port $PORT
+   ```
+3. Your app will be live with full `sentence-transformers` embedding support!
+
+### Vercel
+
+```bash
+npx vercel --prod
+```
+
+The web UI (`public/index.html`) is served statically and `/api/rank` runs as a Python serverless function. On Vercel, if model memory limit is reached, it automatically falls back to TF-IDF + skill coverage.
+
 
 Run the tests:
 
@@ -42,6 +63,8 @@ pytest -q
 
 ```
 ranker.py        # scoring engine: normalization, skills, TF-IDF, embeddings
+api/index.py     # FastAPI backend for the web UI
+public/          # modern single-page web UI
 app.py           # Streamlit interface
 test_ranker.py   # pytest suite
 ```

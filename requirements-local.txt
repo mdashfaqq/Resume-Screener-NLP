@@ -1,0 +1,6 @@
+-r requirements.txt
+uvicorn>=0.29
+streamlit>=1.33
+sentence-transformers>=2.7
+pandas>=2.2
+pytest>=8.0

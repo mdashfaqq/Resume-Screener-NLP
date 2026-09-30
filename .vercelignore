@@ -1,0 +1,8 @@
+venv/
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+app.py
+requirements-local.txt
+test_ranker.py
