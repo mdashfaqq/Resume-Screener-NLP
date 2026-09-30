@@ -1,0 +1,308 @@
+{
+  "skills": {
+    "python": {
+      "aliases": ["py", "python3"],
+      "category": "programming"
+    },
+    "java": {
+      "aliases": [],
+      "category": "programming"
+    },
+    "c++": {
+      "aliases": ["cpp"],
+      "category": "programming"
+    },
+    "c#": {
+      "aliases": ["csharp", "c sharp"],
+      "category": "programming"
+    },
+    "javascript": {
+      "aliases": ["js", "nodejs", "node.js", "node"],
+      "category": "programming"
+    },
+    "typescript": {
+      "aliases": ["ts"],
+      "category": "programming"
+    },
+    "sql": {
+      "aliases": [],
+      "category": "database"
+    },
+    "r": {
+      "aliases": [],
+      "category": "programming"
+    },
+    "go": {
+      "aliases": ["golang"],
+      "category": "programming"
+    },
+    "rust": {
+      "aliases": [],
+      "category": "programming"
+    },
+    "swift": {
+      "aliases": [],
+      "category": "programming"
+    },
+    "kotlin": {
+      "aliases": [],
+      "category": "programming"
+    },
+    "ruby": {
+      "aliases": [],
+      "category": "programming"
+    },
+    "php": {
+      "aliases": [],
+      "category": "programming"
+    },
+    "scala": {
+      "aliases": [],
+      "category": "programming"
+    },
+    "react": {
+      "aliases": ["reactjs", "react.js", "reactjs"],
+      "category": "frontend"
+    },
+    "vue": {
+      "aliases": ["vuejs", "vue.js"],
+      "category": "frontend"
+    },
+    "angular": {
+      "aliases": [],
+      "category": "frontend"
+    },
+    "node": {
+      "aliases": ["nodejs", "node.js"],
+      "category": "backend"
+    },
+    "django": {
+      "aliases": [],
+      "category": "backend"
+    },
+    "flask": {
+      "aliases": [],
+      "category": "backend"
+    },
+    "fastapi": {
+      "aliases": [],
+      "category": "backend"
+    },
+    "spring": {
+      "aliases": ["spring boot"],
+      "category": "backend"
+    },
+    "express": {
+      "aliases": ["express.js", "expressjs"],
+      "category": "backend"
+    },
+    "next.js": {
+      "aliases": ["nextjs"],
+      "category": "frontend"
+    },
+    "nuxt": {
+      "aliases": ["nuxt.js"],
+      "category": "frontend"
+    },
+    "machine learning": {
+      "aliases": ["ml"],
+      "category": "ai"
+    },
+    "deep learning": {
+      "aliases": ["dl"],
+      "category": "ai"
+    },
+    "nlp": {
+      "aliases": ["natural language processing"],
+      "category": "ai"
+    },
+    "computer vision": {
+      "aliases": ["cv"],
+      "category": "ai"
+    },
+    "pytorch": {
+      "aliases": [],
+      "category": "ai"
+    },
+    "tensorflow": {
+      "aliases": ["tf"],
+      "category": "ai"
+    },
+    "keras": {
+      "aliases": [],
+      "category": "ai"
+    },
+    "scikit-learn": {
+      "aliases": ["sklearn"],
+      "category": "ai"
+    },
+    "pandas": {
+      "aliases": [],
+      "category": "data"
+    },
+    "numpy": {
+      "aliases": [],
+      "category": "data"
+    },
+    "docker": {
+      "aliases": [],
+      "category": "devops"
+    },
+    "kubernetes": {
+      "aliases": ["k8s"],
+      "category": "devops"
+    },
+    "aws": {
+      "aliases": ["amazon web services"],
+      "category": "cloud"
+    },
+    "gcp": {
+      "aliases": ["google cloud platform"],
+      "category": "cloud"
+    },
+    "azure": {
+      "aliases": ["microsoft azure"],
+      "category": "cloud"
+    },
+    "git": {
+      "aliases": [],
+      "category": "tools"
+    },
+    "linux": {
+      "aliases": [],
+      "category": "os"
+    },
+    "mongodb": {
+      "aliases": ["mongo"],
+      "category": "database"
+    },
+    "postgresql": {
+      "aliases": ["postgres"],
+      "category": "database"
+    },
+    "mysql": {
+      "aliases": [],
+      "category": "database"
+    },
+    "redis": {
+      "aliases": [],
+      "category": "database"
+    },
+    "elasticsearch": {
+      "aliases": [],
+      "category": "database"
+    },
+    "rest api": {
+      "aliases": ["restful api", "rest"],
+      "category": "api"
+    },
+    "graphql": {
+      "aliases": [],
+      "category": "api"
+    },
+    "grpc": {
+      "aliases": [],
+      "category": "api"
+    },
+    "data analysis": {
+      "aliases": [],
+      "category": "data"
+    },
+    "statistics": {
+      "aliases": [],
+      "category": "data"
+    },
+    "tableau": {
+      "aliases": [],
+      "category": "visualization"
+    },
+    "power bi": {
+      "aliases": ["powerbi"],
+      "category": "visualization"
+    },
+    "spark": {
+      "aliases": ["apache spark"],
+      "category": "data"
+    },
+    "hadoop": {
+      "aliases": [],
+      "category": "data"
+    },
+    "terraform": {
+      "aliases": [],
+      "category": "devops"
+    },
+    "ansible": {
+      "aliases": [],
+      "category": "devops"
+    },
+    "jenkins": {
+      "aliases": [],
+      "category": "devops"
+    },
+    "ci/cd": {
+      "aliases": ["cicd", "ci cd"],
+      "category": "devops"
+    },
+    "html": {
+      "aliases": [],
+      "category": "frontend"
+    },
+    "css": {
+      "aliases": [],
+      "category": "frontend"
+    },
+    "sass": {
+      "aliases": [],
+      "category": "frontend"
+    },
+    "webpack": {
+      "aliases": [],
+      "category": "frontend"
+    },
+    "babel": {
+      "aliases": [],
+      "category": "frontend"
+    },
+    "graphql": {
+      "aliases": [],
+      "category": "api"
+    },
+    "microservices": {
+      "aliases": [],
+      "category": "architecture"
+    },
+    "agile": {
+      "aliases": [],
+      "category": "methodology"
+    },
+    "scrum": {
+      "aliases": [],
+      "category": "methodology"
+    },
+    "kanban": {
+      "aliases": [],
+      "category": "methodology"
+    },
+    "tdd": {
+      "aliases": ["test driven development"],
+      "category": "methodology"
+    },
+    "jest": {
+      "aliases": [],
+      "category": "testing"
+    },
+    "pytest": {
+      "aliases": [],
+      "category": "testing"
+    },
+    "selenium": {
+      "aliases": [],
+      "category": "testing"
+    },
+    "cypress": {
+      "aliases": [],
+      "category": "testing"
+    }
+  }
+}

@@ -30,10 +30,6 @@ textarea:focus{outline:none;border-color:var(--accent)}
 .chip{font-size:12px;padding:4px 10px;border-radius:99px;background:#ffffff0d;border:1px solid var(--line)}
 .chip.ok{background:#34d39918;border-color:#34d39944;color:var(--ok)}
 .chip.bad{background:#f8717114;border-color:#f8717140;color:var(--bad)}
-.slider{margin-bottom:18px}
-.slider div{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
-.slider span{color:var(--muted)}
-input[type=range]{width:100%;accent-color:var(--accent)}
 button{width:100%;margin-top:8px;padding:14px;border:0;border-radius:12px;font:600 15px Inter,sans-serif;color:#fff;cursor:pointer;
   background:linear-gradient(90deg,var(--accent),#5b8cff);box-shadow:0 8px 24px #7c5cff40;transition:.2s}
 button:hover:not(:disabled){transform:translateY(-1px)}
@@ -48,22 +44,24 @@ button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
 .ring::before{content:attr(data-v);width:52px;height:52px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:15px}
 .info{flex:1;min-width:0}
 .name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bars{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px;font-size:12px;color:var(--muted)}
+.bars{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:10px;font-size:12px;color:var(--muted}
 .bar{height:6px;border-radius:9px;background:#ffffff10;margin-top:5px;overflow:hidden}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
 details summary{cursor:pointer;font-size:13px;color:var(--accent2);margin-top:10px}
 .err{color:var(--bad);margin-top:14px;font-size:14px}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid #fff6;border-top-color:#fff;border-radius:50%;animation:s 1s linear infinite;vertical-align:-2px;margin-right:8px}
 @keyframes s{to{transform:rotate(360deg)}}
-@media(max-width:560px){.row{flex-wrap:wrap}.bars{grid-template-columns:1fr}}
+@media(max-width:560px){.row{flex-wrap:wrap}.bars{grid-template-columns:1fr 1fr}}
+.confidence{font-size:11px;color:var(--muted);margin-top:4px}
+.evidence{font-size:12px;color:var(--muted);margin-top:8px;padding-left:8px;border-left:2px solid var(--line)}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <span class="badge">TF-IDF · Embeddings · Skill coverage</span>
+    <span class="badge">Skill Match · Experience · Semantic · Qualification</span>
     <h1>AI Resume Screener</h1>
-    <p>Paste a job description, drop in resumes, and get an explainable ranking with a skill-gap breakdown for every candidate.</p>
+    <p>Paste a job description, drop in resumes, and get an explainable ranking with skill-gap breakdown and evidence for every candidate.</p>
   </header>
 
   <div class="grid">
@@ -76,12 +74,15 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent2);margin-top:10
     </div>
 
     <div class="card">
-      <label class="t">Scoring weights</label>
-      <div class="slider"><div>Keyword match (TF-IDF)<span id="v0"></span></div><input type="range" min="0" max="1" step="0.05" value="0.35"></div>
-      <div class="slider"><div>Semantic match (embeddings)<span id="v1"></span></div><input type="range" min="0" max="1" step="0.05" value="0.40"></div>
-      <div class="slider"><div>Skill coverage<span id="v2"></span></div><input type="range" min="0" max="1" step="0.05" value="0.25"></div>
+      <label class="t">Scoring Model</label>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">
+        <div>Skill Match: 35%</div>
+        <div>Experience Match: 30%</div>
+        <div>Semantic Match: 25%</div>
+        <div>Qualification Match: 10%</div>
+      </div>
       <button id="go" disabled>Rank resumes</button>
-      <p class="note" id="note">Weights are normalized to sum to 100%. Screening should support human review, not replace it.</p>
+      <p class="note" id="note">Screening should support human review, not replace it.</p>
       <div class="err" id="err"></div>
     </div>
   </div>
@@ -91,15 +92,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent2);margin-top:10
 
 <script>
 const $ = s => document.querySelector(s);
-const sliders = [...document.querySelectorAll('input[type=range]')];
 let files = [];
-
-function syncWeights() {
-  const total = sliders.reduce((a, s) => a + +s.value, 0) || 1;
-  sliders.forEach((s, i) => $('#v' + i).textContent = Math.round(s.value / total * 100) + '%');
-}
-sliders.forEach(s => s.oninput = syncWeights);
-syncWeights();
 
 function setFiles(list) {
   files = [...list].filter(f => /\.(pdf|txt)$/i.test(f.name));
@@ -118,7 +111,7 @@ drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); setFiles
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const color = s => s >= 60 ? 'var(--ok)' : s >= 35 ? '#fbbf24' : 'var(--bad)';
-const bar = (label, v) => `<div>${label} · ${Math.round(v * 100)}%<div class="bar"><i style="width:${v * 100}%"></i></div></div>`;
+const bar = (label, v) => `<div>${label} · ${Math.round(v)}%<div class="bar"><i style="width:${v}%"></i></div></div>`;
 
 $('#go').onclick = async () => {
   const btn = $('#go');
@@ -126,7 +119,9 @@ $('#go').onclick = async () => {
   $('#err').textContent = '';
   const fd = new FormData();
   fd.append('jd', $('#jd').value);
-  ['w_tfidf', 'w_sem', 'w_cov'].forEach((k, i) => fd.append(k, sliders[i].value));
+  fd.append('w_tfidf', 0.35);
+  fd.append('w_sem', 0.40);
+  fd.append('w_cov', 0.25);
   files.forEach(f => fd.append('files', f));
   try {
     const res = await fetch('/api/rank', { method: 'POST', body: fd });
@@ -140,9 +135,9 @@ $('#go').onclick = async () => {
   }
 };
 
-function render({ results, skipped, semantic_enabled }) {
+function render({ results, skipped, semantic_enabled, scoring_model }) {
   let head = `<h2 style="margin:0">Ranking <small style="color:var(--muted);font-weight:400;font-size:14px">· ${results.length} candidates</small></h2>`;
-  if (!semantic_enabled) head += `<p class="note">Semantic model not available on this server: its weight was split between keyword match and skill coverage.</p>`;
+  if (!semantic_enabled) head += `<p class="note">Semantic model not available on this server.</p>`;
   if (skipped.length) head += `<p class="err">No text extracted from: ${skipped.map(esc).join(', ')} (scanned PDFs need OCR).</p>`;
   $('#results').innerHTML = head + results.map((r, i) => `
     <div class="card row" style="animation-delay:${i * 60}ms">
@@ -150,10 +145,30 @@ function render({ results, skipped, semantic_enabled }) {
       <div class="ring" style="--p:${r.score};--c:${color(r.score)}" data-v="${r.score}"></div>
       <div class="info">
         <div class="name">${esc(r.name)}</div>
-        <div class="bars">${bar('Keyword', r.tfidf)}${semantic_enabled ? bar('Semantic', r.semantic) : ''}${bar('Skills', r.coverage)}</div>
-        <details><summary>Skill gap (${r.matched.length} matched · ${r.missing.length} missing)</summary>
-          <div class="chips">${r.matched.map(s => `<span class="chip ok">✓ ${esc(s)}</span>`).join('')}${r.missing.map(s => `<span class="chip bad">✕ ${esc(s)}</span>`).join('') || ''}</div>
+        <div class="confidence">Evidence confidence: ${Math.round(r.evidence_confidence)}%</div>
+        <div class="bars">${bar('Skill', r.skill_score)}${bar('Experience', r.experience_score)}${bar('Semantic', r.semantic_score)}${bar('Qualification', r.qualification_score)}</div>
+        <details><summary>Skill gap (${r.matched_required_skills.length} required matched · ${r.missing_required_skills.length} required missing)</summary>
+          <div class="chips" style="margin-bottom:8px">
+            <strong>Required:</strong>
+            ${r.matched_required_skills.map(s => `<span class="chip ok">✓ ${esc(s)}</span>`).join('')}
+            ${r.missing_required_skills.map(s => `<span class="chip bad">✕ ${esc(s)}</span>`).join('')}
+          </div>
+          ${r.matched_preferred_skills.length || r.missing_preferred_skills.length ? `
+          <div class="chips">
+            <strong>Preferred:</strong>
+            ${r.matched_preferred_skills.map(s => `<span class="chip ok">✓ ${esc(s)}</span>`).join('')}
+            ${r.missing_preferred_skills.map(s => `<span class="chip bad">✕ ${esc(s)}</span>`).join('')}
+          </div>` : ''}
         </details>
+        ${r.evidence && r.evidence.length > 0 ? `
+        <details style="margin-top:8px"><summary>Strongest evidence</summary>
+          ${r.evidence.slice(0, 3).map(ev => `
+            <div class="evidence">
+              <strong>${esc(ev.requirement)}</strong> (${ev.match_type}, ${(ev.confidence * 100).toFixed(0)}% confidence)<br>
+              ${esc(ev.evidence.substring(0, 120))}${ev.evidence.length > 120 ? '...' : ''}
+            </div>
+          `).join('')}
+        </details>` : ''}
       </div>
     </div>`).join('');
   $('#results').scrollIntoView({ behavior: 'smooth' });
