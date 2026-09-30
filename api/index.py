@@ -39,6 +39,7 @@ def serialize_result(result):
     data = asdict(result)
     # Convert Evidence objects to dicts
     data['evidence'] = [asdict(ev) for ev in result.evidence]
+    data['strongest_evidence'] = [asdict(ev) for ev in result.strongest_evidence]
     return data
 
 
@@ -50,7 +51,7 @@ async def rank(
     w_sem: float = Form(0.40),
     w_cov: float = Form(0.25),
 ):
-    """Rank resumes against job description using new scoring model.
+    """Rank resumes against job description using ATS scoring model.
     
     Legacy weight parameters (w_tfidf, w_sem, w_cov) are accepted for compatibility
     but are not used in the new scoring model.
@@ -70,7 +71,7 @@ async def rank(
         "results": [serialize_result(r) for r in results],
         "skipped": empty,
         "semantic_enabled": ranker.use_embeddings,
-        "scoring_model": "new",  # Indicate new scoring model
+        "scoring_model": "ats",  # Indicate ATS scoring model
     }
 
 

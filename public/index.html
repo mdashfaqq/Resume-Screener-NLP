@@ -3,87 +3,581 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Resume Screener</title>
+<title>Resume Screener - ATS Analyzer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b0d14;--card:#141824;--line:#232a3b;--text:#e7eaf3;--muted:#8b93a7;--accent:#7c5cff;--accent2:#22d3ee;--ok:#34d399;--bad:#f87171;--r:16px}
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
-  background-image:radial-gradient(60rem 30rem at 10% -10%,#7c5cff22,transparent),radial-gradient(50rem 30rem at 100% 0,#22d3ee18,transparent)}
-.wrap{max-width:1100px;margin:0 auto;padding:40px 16px 80px}
-header{text-align:center;margin-bottom:36px}
-.badge{display:inline-block;padding:6px 12px;border:1px solid var(--line);border-radius:99px;font-size:12px;color:var(--muted);background:#ffffff08}
-h1{font-size:clamp(30px,5vw,46px);margin:14px 0 8px;letter-spacing:-.02em;
-  background:linear-gradient(90deg,#fff,#b9a8ff 50%,var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
-header p{color:var(--muted);margin:0 auto;max-width:560px;line-height:1.6}
-.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:20px}
-@media(max-width:820px){.grid{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px}
-label.t{display:block;font-weight:600;font-size:14px;margin-bottom:10px}
-textarea{width:100%;min-height:210px;resize:vertical;background:#0e111a;border:1px solid var(--line);border-radius:12px;color:var(--text);padding:14px;font:inherit;font-size:14px;line-height:1.5}
-textarea:focus{outline:none;border-color:var(--accent)}
-.drop{margin-top:16px;border:1.5px dashed var(--line);border-radius:12px;padding:26px;text-align:center;cursor:pointer;transition:.2s;color:var(--muted)}
-.drop:hover,.drop.over{border-color:var(--accent);background:#7c5cff10;color:var(--text)}
-.drop b{color:var(--text)}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.chip{font-size:12px;padding:4px 10px;border-radius:99px;background:#ffffff0d;border:1px solid var(--line)}
-.chip.ok{background:#34d39918;border-color:#34d39944;color:var(--ok)}
-.chip.bad{background:#f8717114;border-color:#f8717140;color:var(--bad)}
-button{width:100%;margin-top:8px;padding:14px;border:0;border-radius:12px;font:600 15px Inter,sans-serif;color:#fff;cursor:pointer;
-  background:linear-gradient(90deg,var(--accent),#5b8cff);box-shadow:0 8px 24px #7c5cff40;transition:.2s}
-button:hover:not(:disabled){transform:translateY(-1px)}
-button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
-.note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
-#results{margin-top:28px}
-.row{display:flex;align-items:center;gap:18px;padding:18px 20px;margin-top:12px;animation:up .35s ease both}
-@keyframes up{from{opacity:0;transform:translateY(8px)}}
-.rank{font-weight:700;color:var(--muted);width:28px}
-.ring{--p:0;width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;
-  background:conic-gradient(var(--c) calc(var(--p)*1%),#ffffff10 0)}
-.ring::before{content:attr(data-v);width:52px;height:52px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:15px}
-.info{flex:1;min-width:0}
-.name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bars{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:10px;font-size:12px;color:var(--muted}
-.bar{height:6px;border-radius:9px;background:#ffffff10;margin-top:5px;overflow:hidden}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-details summary{cursor:pointer;font-size:13px;color:var(--accent2);margin-top:10px}
-.err{color:var(--bad);margin-top:14px;font-size:14px}
-.spin{display:inline-block;width:14px;height:14px;border:2px solid #fff6;border-top-color:#fff;border-radius:50%;animation:s 1s linear infinite;vertical-align:-2px;margin-right:8px}
-@keyframes s{to{transform:rotate(360deg)}}
-@media(max-width:560px){.row{flex-wrap:wrap}.bars{grid-template-columns:1fr 1fr}}
-.confidence{font-size:11px;color:var(--muted);margin-top:4px}
-.evidence{font-size:12px;color:var(--muted);margin-top:8px;padding-left:8px;border-left:2px solid var(--line)}
+:root {
+  --bg: #0f172a;
+  --bg-card: #1e293b;
+  --bg-card-hover: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent: #6366f1;
+  --accent-light: #818cf8;
+  --accent-dark: #4f46e5;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --border: #334155;
+  --border-light: #475569;
+  --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  background-image: 
+    radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  color: var(--accent-light);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--border-light);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+  background: #0f172a;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  resize: vertical;
+  transition: all 0.2s ease;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.dropzone {
+  margin-top: 1rem;
+  border: 2px dashed var(--border);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.dropzone:hover,
+.dropzone.over {
+  border-color: var(--accent);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.dropzone b {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.dropzone small {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  color: var(--accent-light);
+}
+
+.scoring-model {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.scoring-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.scoring-item:last-child {
+  border-bottom: none;
+}
+
+.scoring-label {
+  color: var(--text-muted);
+}
+
+.scoring-value {
+  font-weight: 600;
+  color: var(--accent-light);
+}
+
+.button {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font: 600 1rem Inter, sans-serif;
+  color: white;
+  cursor: pointer;
+  background: var(--gradient);
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+  line-height: 1.5;
+  padding: 0.75rem;
+  background: rgba(245, 158, 11, 0.1);
+  border-left: 3px solid var(--warning);
+  border-radius: 0.375rem;
+}
+
+.error {
+  color: var(--danger);
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  padding: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid var(--danger);
+  border-radius: 0.375rem;
+}
+
+#results {
+  margin-top: 3rem;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.results-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.results-header small {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 0.875rem;
+}
+
+.result-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  animation: slideIn 0.4s ease both;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rank {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  width: 3rem;
+  text-align: center;
+}
+
+.score-ring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  background: conic-gradient(var(--score-color) calc(var(--score) * 1%), rgba(255,255,255,0.05) 0);
+  position: relative;
+}
+
+.score-ring::before {
+  content: attr(data-score);
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.candidate-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.candidate-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.confidence-bar {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.score-bars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+  .score-bars {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.score-bar-item {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.score-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  margin-top: 0.375rem;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  background: var(--gradient);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+details {
+  margin-top: 1rem;
+}
+
+summary {
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--accent-light);
+  font-weight: 500;
+  padding: 0.5rem 0;
+  border-radius: 0.375rem;
+  transition: background 0.2s ease;
+}
+
+summary:hover {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.skill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 0.5rem;
+}
+
+.skill-chip-header {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.chip {
+  font-size: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  font-weight: 500;
+}
+
+.chip.matched {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: var(--success);
+}
+
+.chip.missing {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--danger);
+}
+
+.chip.partial {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: var(--warning);
+}
+
+.evidence-list {
+  margin-top: 0.75rem;
+}
+
+.evidence-item {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-left: 2px solid var(--border);
+  border-radius: 0.375rem;
+}
+
+.evidence-item strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.evidence-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.warning-list {
+  margin-top: 0.75rem;
+}
+
+.warning-item {
+  font-size: 0.8125rem;
+  color: var(--warning);
+  padding: 0.5rem 0.75rem;
+  background: rgba(245, 158, 11, 0.1);
+  border-left: 2px solid var(--warning);
+  border-radius: 0.375rem;
+  margin-bottom: 0.375rem;
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="container">
   <header>
-    <span class="badge">Skill Match · Experience · Semantic · Qualification</span>
+    <div class="badge">
+      <span>🎯</span>
+      <span>ATS Analyzer</span>
+      <span>•</span>
+      <span>Evidence-Based</span>
+      <span>•</span>
+      <span>Section-Aware</span>
+    </div>
     <h1>AI Resume Screener</h1>
-    <p>Paste a job description, drop in resumes, and get an explainable ranking with skill-gap breakdown and evidence for every candidate.</p>
+    <p class="subtitle">ATS-style resume analyzer with explainable, evidence-based scoring. Distinguishes skill presence from actual experience using section-aware parsing and weighted evidence extraction.</p>
   </header>
 
   <div class="grid">
     <div class="card">
-      <label class="t" for="jd">Job description</label>
-      <textarea id="jd" placeholder="We're hiring a Python developer with machine learning, PyTorch, SQL and Docker experience..."></textarea>
-      <div class="drop" id="drop"><b>Drop resumes here</b> or click to browse<br><small>PDF or TXT · multiple files</small></div>
-      <input type="file" id="file" accept=".pdf,.txt" multiple hidden>
-      <div class="chips" id="files"></div>
+      <label for="jd">📝 Job Description</label>
+      <textarea id="jd" placeholder="We're hiring a Senior Full Stack Developer with React, TypeScript, Node.js, and PostgreSQL experience..."></textarea>
+      
+      <div class="dropzone" id="dropzone">
+        <b>📁 Drop resumes here</b> or click to browse
+        <br>
+        <small>PDF or TXT · multiple files</small>
+      </div>
+      <input type="file" id="file-input" class="file-input" accept=".pdf,.txt" multiple>
+      <div class="file-list" id="file-list"></div>
     </div>
 
     <div class="card">
-      <label class="t">Scoring Model</label>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">
-        <div>Skill Match: 35%</div>
-        <div>Experience Match: 30%</div>
-        <div>Semantic Match: 25%</div>
-        <div>Qualification Match: 10%</div>
+      <label>📊 ATS Scoring Model</label>
+      <div class="scoring-model">
+        <div class="scoring-item">
+          <span class="scoring-label">Required Skills</span>
+          <span class="scoring-value">30%</span>
+        </div>
+        <div class="scoring-item">
+          <span class="scoring-label">Experience & Responsibility</span>
+          <span class="scoring-value">25%</span>
+        </div>
+        <div class="scoring-item">
+          <span class="scoring-label">Semantic Job Fit</span>
+          <span class="scoring-value">20%</span>
+        </div>
+        <div class="scoring-item">
+          <span class="scoring-label">Qualifications</span>
+          <span class="scoring-value">10%</span>
+        </div>
+        <div class="scoring-item">
+          <span class="scoring-label">Preferred Skills</span>
+          <span class="scoring-value">5%</span>
+        </div>
+        <div class="scoring-item">
+          <span class="scoring-label">ATS Quality</span>
+          <span class="scoring-value">10%</span>
+        </div>
       </div>
-      <button id="go" disabled>Rank resumes</button>
-      <p class="note" id="note">Screening should support human review, not replace it.</p>
-      <div class="err" id="err"></div>
+      
+      <button id="analyze-btn" class="button" disabled>🔍 Analyze Resumes</button>
+      
+      <div class="note">
+        💡 Section-aware evidence extraction prevents false positives (e.g., GitHub in header ≠ Git experience).
+      </div>
+      <div class="error" id="error"></div>
     </div>
   </div>
 
@@ -96,81 +590,179 @@ let files = [];
 
 function setFiles(list) {
   files = [...list].filter(f => /\.(pdf|txt)$/i.test(f.name));
-  $('#files').innerHTML = files.map(f => `<span class="chip">${esc(f.name)}</span>`).join('');
-  update();
+  $('#file-list').innerHTML = files.map(f => 
+    `<span class="file-chip">📄 ${esc(f.name)}</span>`
+  ).join('');
+  updateButton();
 }
-function update() { $('#go').disabled = !($('#jd').value.trim() && files.length); }
-$('#jd').oninput = update;
 
-const drop = $('#drop');
-drop.onclick = () => $('#file').click();
-$('#file').onchange = e => setFiles(e.target.files);
-drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
-drop.ondragleave = () => drop.classList.remove('over');
-drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); setFiles(e.dataTransfer.files); };
+function updateButton() {
+  $('#analyze-btn').disabled = !($('#jd').value.trim() && files.length);
+}
 
-const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const color = s => s >= 60 ? 'var(--ok)' : s >= 35 ? '#fbbf24' : 'var(--bad)';
-const bar = (label, v) => `<div>${label} · ${Math.round(v)}%<div class="bar"><i style="width:${v}%"></i></div></div>`;
+$('#jd').addEventListener('input', updateButton);
 
-$('#go').onclick = async () => {
-  const btn = $('#go');
-  btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Ranking…';
-  $('#err').textContent = '';
+const dropzone = $('#dropzone');
+dropzone.addEventListener('click', () => $('#file-input').click());
+$('#file-input').addEventListener('change', e => setFiles(e.target.files));
+
+dropzone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropzone.classList.add('over');
+});
+
+dropzone.addEventListener('dragleave', () => {
+  dropzone.classList.remove('over');
+});
+
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('over');
+  setFiles(e.dataTransfer.files);
+});
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;'
+}[c]));
+
+const getScoreColor = score => {
+  if (score >= 70) return '#10b981';
+  if (score >= 40) return '#f59e0b';
+  return '#ef4444';
+};
+
+const getScoreRingColor = score => {
+  if (score >= 70) return 'rgba(16, 185, 129, 1)';
+  if (score >= 40) return 'rgba(245, 158, 11, 1)';
+  return 'rgba(239, 68, 68, 1)';
+};
+
+$('#analyze-btn').addEventListener('click', async () => {
+  const btn = $('#analyze-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Analyzing…';
+  $('#error').textContent = '';
+  
   const fd = new FormData();
   fd.append('jd', $('#jd').value);
   fd.append('w_tfidf', 0.35);
   fd.append('w_sem', 0.40);
   fd.append('w_cov', 0.25);
   files.forEach(f => fd.append('files', f));
+  
   try {
     const res = await fetch('/api/rank', { method: 'POST', body: fd });
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || 'Request failed');
     render(data);
   } catch (e) {
-    $('#err').textContent = e.message;
+    $('#error').textContent = e.message;
   } finally {
-    btn.textContent = 'Rank resumes'; update();
+    btn.textContent = '🔍 Analyze Resumes';
+    updateButton();
   }
-};
+});
 
 function render({ results, skipped, semantic_enabled, scoring_model }) {
-  let head = `<h2 style="margin:0">Ranking <small style="color:var(--muted);font-weight:400;font-size:14px">· ${results.length} candidates</small></h2>`;
-  if (!semantic_enabled) head += `<p class="note">Semantic model not available on this server.</p>`;
-  if (skipped.length) head += `<p class="err">No text extracted from: ${skipped.map(esc).join(', ')} (scanned PDFs need OCR).</p>`;
-  $('#results').innerHTML = head + results.map((r, i) => `
-    <div class="card row" style="animation-delay:${i * 60}ms">
+  let html = `<div class="results-header">
+    <h2>📈 ATS Analysis Results</h2>
+    <small>${results.length} candidates analyzed</small>
+  </div>`;
+  
+  if (!semantic_enabled) {
+    html += `<div class="note" style="margin-bottom: 1rem;">⚠️ Semantic model not available on this server.</div>`;
+  }
+  
+  if (skipped.length) {
+    html += `<div class="error" style="margin-bottom: 1rem;">⚠️ No text extracted from: ${skipped.map(esc).join(', ')} (scanned PDFs need OCR).</div>`;
+  }
+  
+  html += results.map((r, i) => {
+    const scoreColor = getScoreColor(r.score);
+    const ringColor = getScoreRingColor(r.score);
+    
+    return `
+    <div class="result-card" style="animation-delay: ${i * 100}ms">
       <div class="rank">#${i + 1}</div>
-      <div class="ring" style="--p:${r.score};--c:${color(r.score)}" data-v="${r.score}"></div>
-      <div class="info">
-        <div class="name">${esc(r.name)}</div>
-        <div class="confidence">Evidence confidence: ${Math.round(r.evidence_confidence)}%</div>
-        <div class="bars">${bar('Skill', r.skill_score)}${bar('Experience', r.experience_score)}${bar('Semantic', r.semantic_score)}${bar('Qualification', r.qualification_score)}</div>
-        <details><summary>Skill gap (${r.matched_required_skills.length} required matched · ${r.missing_required_skills.length} required missing)</summary>
-          <div class="chips" style="margin-bottom:8px">
-            <strong>Required:</strong>
-            ${r.matched_required_skills.map(s => `<span class="chip ok">✓ ${esc(s)}</span>`).join('')}
-            ${r.missing_required_skills.map(s => `<span class="chip bad">✕ ${esc(s)}</span>`).join('')}
+      <div class="score-ring" style="--score: ${r.score}; --score-color: ${ringColor}" data-score="${r.score}"></div>
+      <div class="candidate-info">
+        <div class="candidate-name">${esc(r.name)}</div>
+        <div class="confidence-bar">
+          Evidence confidence: ${Math.round(r.evidence_confidence)}% · ATS Quality: ${Math.round(r.ats_quality_score)}%
+        </div>
+        <div class="score-bars">
+          <div class="score-bar-item">
+            Required (${r.required_skill_score.toFixed(0)}%)
+            <div class="score-bar">
+              <div class="score-bar-fill" style="width: ${r.required_skill_score}%; background: ${scoreColor}"></div>
+            </div>
+          </div>
+          <div class="score-bar-item">
+            Experience (${r.experience_score.toFixed(0)}%)
+            <div class="score-bar">
+              <div class="score-bar-fill" style="width: ${r.experience_score}%; background: ${scoreColor}"></div>
+            </div>
+          </div>
+          <div class="score-bar-item">
+            Semantic (${r.semantic_score.toFixed(0)}%)
+            <div class="score-bar">
+              <div class="score-bar-fill" style="width: ${r.semantic_score}%; background: ${scoreColor}"></div>
+            </div>
+          </div>
+          <div class="score-bar-item">
+            Qualifications (${r.qualification_score.toFixed(0)}%)
+            <div class="score-bar">
+              <div class="score-bar-fill" style="width: ${r.qualification_score}%; background: ${scoreColor}"></div>
+            </div>
+          </div>
+        </div>
+        <details>
+          <summary>🎯 Skill Gap (${r.matched_required_skills.length} matched · ${r.missing_required_skills.length} missing · ${r.partial_required_skills.length} partial)</summary>
+          <div class="skill-chips">
+            <div class="skill-chip-header">Required Skills</div>
+            ${r.matched_required_skills.map(s => `<span class="chip matched">✓ ${esc(s)}</span>`).join('')}
+            ${r.partial_required_skills.map(s => `<span class="chip partial">◐ ${esc(s)}</span>`).join('')}
+            ${r.missing_required_skills.map(s => `<span class="chip missing">✕ ${esc(s)}</span>`).join('')}
           </div>
           ${r.matched_preferred_skills.length || r.missing_preferred_skills.length ? `
-          <div class="chips">
-            <strong>Preferred:</strong>
-            ${r.matched_preferred_skills.map(s => `<span class="chip ok">✓ ${esc(s)}</span>`).join('')}
-            ${r.missing_preferred_skills.map(s => `<span class="chip bad">✕ ${esc(s)}</span>`).join('')}
+          <div class="skill-chips">
+            <div class="skill-chip-header">Preferred Skills</div>
+            ${r.matched_preferred_skills.map(s => `<span class="chip matched">✓ ${esc(s)}</span>`).join('')}
+            ${r.missing_preferred_skills.map(s => `<span class="chip missing">✕ ${esc(s)}</span>`).join('')}
           </div>` : ''}
         </details>
-        ${r.evidence && r.evidence.length > 0 ? `
-        <details style="margin-top:8px"><summary>Strongest evidence</summary>
-          ${r.evidence.slice(0, 3).map(ev => `
-            <div class="evidence">
-              <strong>${esc(ev.requirement)}</strong> (${ev.match_type}, ${(ev.confidence * 100).toFixed(0)}% confidence)<br>
-              ${esc(ev.evidence.substring(0, 120))}${ev.evidence.length > 120 ? '...' : ''}
-            </div>
-          `).join('')}
+        ${r.parsing_warnings && r.parsing_warnings.length > 0 ? `
+        <details>
+          <summary>⚠️ Parsing Warnings (${r.parsing_warnings.length})</summary>
+          <div class="warning-list">
+            ${r.parsing_warnings.map(w => `<div class="warning-item">⚠️ ${esc(w)}</div>`).join('')}
+          </div>
+        </details>` : ''}
+        ${r.strongest_evidence && r.strongest_evidence.length > 0 ? `
+        <details>
+          <summary>💪 Strongest Evidence</summary>
+          <div class="evidence-list">
+            ${r.strongest_evidence.map(ev => `
+              <div class="evidence-item">
+                <strong>${esc(ev.requirement)}</strong>
+                <div class="evidence-meta">
+                  Section: ${ev.section} · Strength: ${ev.evidence_strength} · ${(ev.confidence * 100).toFixed(0)}% confidence
+                </div>
+                ${esc(ev.evidence.substring(0, 150))}${ev.evidence.length > 150 ? '...' : ''}
+              </div>
+            `).join('')}
+          </div>
         </details>` : ''}
       </div>
-    </div>`).join('');
+    </div>
+    `;
+  }).join('');
+  
+  $('#results').innerHTML = html;
   $('#results').scrollIntoView({ behavior: 'smooth' });
 }
 </script>

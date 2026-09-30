@@ -1,17 +1,36 @@
-# AI Resume Screener
+# AI Resume Screener - ATS-Style Analyzer
 
-Ranks a batch of resumes against a job description with explainable, job-aware scoring. Uses weighted skill matching, experience evidence, semantic similarity, and qualification matching.
+ATS-style resume analyzer with explainable, evidence-based scoring. Distinguishes skill presence from actual experience using section-aware parsing and weighted evidence extraction.
 
-## How scoring works
+## How ATS Scoring Works
 
-Each resume gets four sub-scores, blended into a final 0–100 score:
+Each resume gets six sub-scores, blended into a final 0–100 score:
 
 | Signal | What it captures | Default weight |
 |--------|------------------|----------------|
-| Skill Match | Weighted coverage of required/preferred/optional skills | 0.35 |
-| Experience Match | Evidence strength of relevant experience (mention vs project vs deployment) | 0.30 |
-| Semantic Match | Semantic similarity of JD responsibilities to resume sections | 0.25 |
-| Qualification Match | Education, certifications, and explicit requirements | 0.10 |
+| Required Skill Match | Weighted coverage of required skills with section evidence | 0.30 |
+| Experience & Responsibility | Evidence strength of relevant experience and responsibility matching | 0.25 |
+| Semantic Job Fit | Semantic similarity of JD responsibilities to resume sections | 0.20 |
+| Qualification Match | Education, certifications, and explicit experience requirements | 0.10 |
+| Preferred Skill Match | Weighted coverage of preferred skills with section evidence | 0.05 |
+| ATS Resume Quality | Resume parsing quality and ATS readiness | 0.10 |
+
+### Key Innovation: Section-Aware Evidence Extraction
+
+The system distinguishes between **skill presence** and **actual experience** by analyzing where skills appear in the resume:
+
+**Section Evidence Weights:**
+- Experience/Projects: 1.00 (strong evidence)
+- Internship: 0.95 (strong evidence)
+- Technical Skills: 0.65 (moderate evidence)
+- Summary: 0.50 (weak evidence)
+- Education: 0.30 (weak evidence)
+- Header/Contact: 0.00 (no evidence - prevents false positives)
+
+**Example:**
+- "GitHub" in header/contact → NOT counted as Git experience
+- "Git" in Technical Skills → Skill detected, but weak evidence
+- "Implemented Git-based CI workflow" in Experience → Strong evidence
 
 ### Skill Matching
 
@@ -22,7 +41,7 @@ Skills are extracted from job descriptions and classified as:
 
 The skill score is calculated as:
 ```
-weighted_skill_score = (sum of matched skill weights) / (sum of all JD skill weights) × 100
+weighted_skill_score = (sum of matched skill weights × evidence strength) / (sum of all JD skill weights) × 100
 ```
 
 Skills are matched against an extensible configuration file (`skills_config.json`) with alias normalization (e.g., `ML` → `machine learning`, `sklearn` → `scikit-learn`, `k8s` → `kubernetes`, `JS` → `JavaScript`).
@@ -31,14 +50,14 @@ Skills are matched against an extensible configuration file (`skills_config.json
 
 Experience scoring distinguishes between:
 - **Weak evidence**: "Familiar with Docker"
-- **Medium evidence**: "Used Docker to containerize services"
+- **Moderate evidence**: "Used Docker to containerize services"
 - **Strong evidence**: "Designed and deployed Docker-based production services"
 
-The score measures relevance to the JD, not simply the number of technologies mentioned.
+Action verbs (developed, implemented, deployed, architected, etc.) strengthen evidence when detected with skills.
 
 ### Semantic Matching
 
-Compares JD responsibilities against relevant resume sections (experience, projects, responsibilities) using sentence embeddings. For each responsibility, finds the most relevant resume evidence and calculates similarity.
+Compares JD responsibilities against relevant resume sections (experience, projects, internship) using sentence embeddings. For each responsibility, finds the most relevant resume evidence and calculates similarity.
 
 ### Qualification Matching
 
@@ -47,27 +66,39 @@ Checks explicit requirements:
 - Experience requirements (years of experience)
 - Certifications
 
+### ATS Quality Score
+
+Evaluates resume parsing quality:
+- Section detection (experience, education, skills)
+- Contact information presence
+- Formatting issues (long paragraphs, broken characters)
+- Duplicate sections
+
 ### Evidence & Confidence
 
 Each match includes:
 - Evidence text from the resume
-- Match type (direct, semantic, partial)
+- Match type (exact, alias, semantic, partial)
 - Confidence score (0-1)
+- Section where evidence was found
+- Evidence strength (strong, moderate, weak)
 
-Overall evidence confidence reflects how clearly the resume provides evidence for the matching decision.
+Overall evidence confidence reflects how clearly the resume provides evidence for the matching decisions.
 
 ## Features
 
 - Upload PDF or TXT resumes in bulk
-- Job-aware requirement extraction (required/preferred/optional skills)
+- Section-aware resume parsing with normalization
 - Weighted skill matching with configurable skill lexicon
-- Experience evidence scoring based on strength indicators
+- Experience evidence scoring with action verb detection
 - Semantic matching of responsibilities to resume sections
 - Qualification matching for education, certifications, experience
+- ATS quality scoring for resume parsing
 - Explainable results with evidence tracking and confidence scores
-- Per-candidate skill gap breakdown (required vs preferred)
-- Strongest evidence display for each candidate
-- Unit tests covering all scoring components
+- Per-candidate skill gap breakdown (required vs preferred vs partial)
+- Strongest evidence display with section context
+- Parsing warnings for ATS issues
+- Unit tests covering all scoring components (35 tests)
 
 ## Run it
 
@@ -107,12 +138,12 @@ pytest -q
 ## Project structure
 
 ```
-ranker.py           # scoring engine: JD parsing, skill matching, experience, semantic, qualification
+ranker.py           # ATS scoring engine: section detection, evidence extraction, scoring
 skills_config.json  # extensible skill and alias configuration
 api/index.py        # FastAPI backend for the web UI
 public/             # modern single-page web UI
 app.py              # Streamlit interface
-test_ranker.py      # comprehensive pytest suite
+test_ranker.py      # comprehensive pytest suite (35 tests)
 ```
 
 ## Limitations
@@ -121,6 +152,7 @@ test_ranker.py      # comprehensive pytest suite
 - JD section detection is conservative and may not catch all formatting styles.
 - Experience evidence scoring uses keyword-based strength indicators.
 - Automated screening can inherit bias from job descriptions, so it should support human review, not replace it.
+- Scanned PDFs require OCR (not implemented).
 
 ## Tech stack
 
